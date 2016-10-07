@@ -1,2 +1,2 @@
 default:
-	g++ -Wall intersectCount.cpp
+	g++ -Wall -O3 intersectCount.cpp
