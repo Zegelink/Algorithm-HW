@@ -1,0 +1,2 @@
+defaut:
+	g++ jump.cpp
