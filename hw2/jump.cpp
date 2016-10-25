@@ -7,17 +7,19 @@
 #include <fstream>
 #include <utility>  //pair
 #include <cmath>
+#include <algorithm>
 using namespace std;
 
 void extractData(pair<int,int>* array, ifstream* file,int size);
 int jump(pair<int,int>* p,int pstart,int pend, pair<int,int>* q,int qstart, int qend, double l, int** memory_jump);
 double distanceTo(pair<int,int> p, pair<int,int> q);
 int jump_iterative(pair<int,int>* p,int pstart,int pend, pair<int,int>* q,int qstart, int qend, double l, int **memory_jump);
+int binary_search_jump(int *arr, int left, int right,pair<int,int>* p,int pstart,int pend, pair<int,int>* q,int qstart, int qend, double l, int **memory_jump);
 
 int main(){
 
    ifstream file;
-   file.open("4.txt");
+   file.open("5.txt");
     
     int sizep;
     file>>sizep;
@@ -39,6 +41,18 @@ int main(){
     /*for(int i = 0; i < sizeq; i++){
         cout<<"("<<q[i].first<<","<<q[i].second<<")"<<endl;
     }*/
+    
+    int sizel;
+    file>>sizel;
+    int* l = new int[sizel];
+    for (int i = 0; i < sizel; i++){
+        file>>l[i];
+        //eliminate the , symbol
+        file.get();
+    }
+    //sort l in preparation for binary search
+    sort(l,l+sizel);
+
     int** memory_jump = new int* [sizep];
     for(int i = 0; i < sizep; i++){
         memory_jump[i] = new int [sizeq];
@@ -46,9 +60,9 @@ int main(){
             memory_jump[i][j] = -1;
         }
     }
-    
     //int result = jump(p,0,sizep-1,q,0,sizeq-1,225,memory_jump);
-    int result = jump_iterative(p,0,sizep-1,q,0,sizeq-1,23,memory_jump);
+    //int result = jump_iterative(p,0,sizep-1,q,0,sizeq-1,1,memory_jump);
+    int result = binary_search_jump(l,0,sizel-1,p,0,sizep-1,q,0,sizeq-1,23,memory_jump);
     cout<<"the result is "<<result<<endl;
     
     //write result into file
@@ -59,6 +73,7 @@ int main(){
     
    delete[] p;
    delete[] q;
+    delete[] l;
     for (int i = 0; i < sizep; i++){
         delete[] memory_jump[i];
     }
@@ -71,6 +86,7 @@ int main(){
 //This function extracts data into the array for the specific format of the input file
 void extractData(pair<int,int>* array, ifstream* file,int size){
     char c;
+    //the format for input 1,2,3 needs the following line, weird format of input file the prof has provided to us!
     //file->get(c);
     file->get(c);
     for (int i = 0; i < size-1; i++){
@@ -189,3 +205,29 @@ int jump_iterative(pair<int,int>* p,int pstart,int pend, pair<int,int>* q,int qs
     }
     return memory_jump[pstart][qstart];
 }
+
+int binary_search_jump(int *arr, int left, int right,pair<int,int>* p,int pstart,int pend, pair<int,int>* q,int qstart, int qend, double l, int **memory_jump){
+    while(right-left>1){
+        int middle = (left+right)/2;
+        if(jump_iterative(p,pstart,pend,q,qstart,qend,arr[middle],memory_jump)==1){
+            right = middle;
+        }
+        else{
+            left = middle;
+        }
+    }
+    //only two elements remaining
+    if (jump_iterative(p,pstart,pend,q,qstart,qend,arr[left],memory_jump)==1){
+        return arr[left];
+    }
+    else{
+        return arr[right];
+    }
+}
+
+
+
+
+
+
+
