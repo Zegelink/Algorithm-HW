@@ -12,11 +12,12 @@ using namespace std;
 void extractData(pair<int,int>* array, ifstream* file,int size);
 int jump(pair<int,int>* p,int pstart,int pend, pair<int,int>* q,int qstart, int qend, double l, int** memory_jump);
 double distanceTo(pair<int,int> p, pair<int,int> q);
+int jump_iterative(pair<int,int>* p,int pstart,int pend, pair<int,int>* q,int qstart, int qend, double l, int **memory_jump);
 
 int main(){
 
    ifstream file;
-   file.open("5.txt");
+   file.open("4.txt");
     
     int sizep;
     file>>sizep;
@@ -46,8 +47,8 @@ int main(){
         }
     }
     
-    int result = jump(p,0,sizep-1,q,0,sizeq-1,226,memory_jump);
-    
+    //int result = jump(p,0,sizep-1,q,0,sizeq-1,225,memory_jump);
+    int result = jump_iterative(p,0,sizep-1,q,0,sizeq-1,23,memory_jump);
     cout<<"the result is "<<result<<endl;
     
     //write result into file
@@ -146,4 +147,45 @@ int jump(pair<int,int>* p,int pstart,int pend, pair<int,int>* q,int qstart, int 
 double distanceTo(pair<int,int> p, pair<int,int> q){
     int d = pow(p.first-q.first,2)+pow(p.second-q.second,2);
     return sqrt(d);
+}
+
+int jump_iterative(pair<int,int>* p,int pstart,int pend, pair<int,int>* q,int qstart, int qend, double l, int **memory_jump){
+    //fill the last element
+    if(distanceTo(p[pend],q[qend]) > l){
+        memory_jump[pend][qend] = 0;
+    }
+    else{
+        memory_jump[pend][qend] = 1;
+    }
+    //fill the rightmost column
+    for (int i = pend-1; i>=pstart; i--){
+        if( distanceTo(p[i],q[qend]) <= l && memory_jump[i+1][qend] == 1){
+            memory_jump[i][qend] = 1;
+        }
+        else{
+            memory_jump[i][qend] = 0;
+        }
+    }
+    //fill the bottom row
+    for (int i = qend-1; i>=qstart; i--){
+        if( distanceTo(p[pend],q[i]) <= l && memory_jump[pend][i+1] == 1){
+            memory_jump[pend][i] = 1;
+        }
+        else{
+            memory_jump[pend][i] = 0;
+        }
+    }
+    //fill the rest
+    for (int i = pend-1;i>=pstart;i--){
+        for(int j = qend-1;j>=qstart;j--){
+            //current point distance no greater than the leash and any other three route is working
+            if (distanceTo(p[i],q[j]) <= l && (memory_jump[i+1][j]||memory_jump[i][j+1]||memory_jump[i+1][j+1]) ){
+                memory_jump[i][j] = 1;
+            }
+            else{
+                memory_jump[i][j] = 0;
+            }
+        }
+    }
+    return memory_jump[pstart][qstart];
 }
