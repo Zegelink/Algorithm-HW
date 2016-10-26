@@ -19,16 +19,12 @@ int binary_search_jump(int *arr, int left, int right,pair<int,int>* p,int pstart
 int main(){
 
    ifstream file;
-   file.open("5.txt");
+   file.open("1.txt");
     
     int sizep;
     file>>sizep;
-    /*char c;
-    while(file.get(c)){
-        cout<<c;
-    }*/
     
-   pair<int,int>* p = new pair<int,int> [sizep];
+    pair<int,int>* p = new pair<int,int> [sizep];
     extractData(p,&file,sizep);
     /*for(int i = 0; i < sizep; i++){
         cout<<"("<<p[i].first<<","<<p[i].second<<")"<<endl;
@@ -163,8 +159,8 @@ int jump(pair<int,int>* p,int pstart,int pend, pair<int,int>* q,int qstart, int 
 }
 
 double distanceTo(pair<int,int> p, pair<int,int> q){
-    int d = pow(p.first-q.first,2)+pow(p.second-q.second,2);
-    return sqrt(d);
+    double d = sqrt( pow(p.first-q.first,2)+pow(p.second-q.second,2) );
+    return d;
 }
 
 int jump_iterative(pair<int,int>* p,int pstart,int pend, pair<int,int>* q,int qstart, int qend, double l, int **memory_jump){
