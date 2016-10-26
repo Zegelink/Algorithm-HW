@@ -87,8 +87,10 @@ int main(){
 void extractData(pair<int,int>* array, ifstream* file,int size){
     char c;
     //the format for input 1,2,3 needs the following line, weird format of input file the prof has provided to us!
-    //file->get(c);
-    file->get(c);
+    while(file->peek() != '('){
+        file->get(c);
+    }
+
     for (int i = 0; i < size-1; i++){
         file->get(c);
         (*file)>>array[i].first;
