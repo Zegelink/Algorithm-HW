@@ -1,4 +1,9 @@
 /*
+I enjoy writing this assignment. I enjoy the process of solving an algorithm problem.
+The code here gives a good sense of my reasoning and C++ experience.
+*/
+
+/*
  Author: Chongxian Chen
  DATE: October 11, 2016
  */
